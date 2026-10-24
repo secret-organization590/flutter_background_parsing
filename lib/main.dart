@@ -23,8 +23,8 @@ Future<List<Photo>> fetchPhotos() async {
 }
 
 List<Photo> parsePhotos(String responseBody) {
-  final parsed = (jsonDecode(responseBody) as List<Object>)
-      .cast<Map<String, Object>>();
+  final parsed = (jsonDecode(responseBody) as List<Object?>)
+      .cast<Map<String, Object?>>();
 
   return parsed.map(Photo.fromJson).toList();
 }
@@ -35,7 +35,7 @@ class Photo {
 
   const new({required this.identifier, required this.thumbnailUrl});
 
-  factory fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, Object?> json) {
     switch (json) {
       case {'id': int identifier, 'thumbnailUrl': String thumbnailUrl}:
         return Photo(identifier: identifier, thumbnailUrl: thumbnailUrl);
@@ -71,8 +71,8 @@ class _MainAppState extends State<MainApp> {
           future: _photosFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Text(
-                'An error has occurred!',
+              return Text(
+                'An error has occurred! ${snapshot.error!}',
                 style: TextStyle(color: Colors.red),
               );
             }
